@@ -85,6 +85,7 @@ function clicked(liIndex) {
   const currentMusic = musicAll[liIndex];
   loadMusic(currentMusic);
   playingSong();
+  playMusic();
 }
 
 const litags = wrapper.querySelectorAll("li");
@@ -108,9 +109,17 @@ function playingSong() {
 }
 
 const playMusic = () => {
+  playPauseBtn.classList.add("paused");
   playPauseBtn.innerHTML = `<i class="fa-solid fa-pause"></i>`;
   musicImage.classList.add("rotate");
   mAudio.play();
+};
+
+const pauseMusic = () => {
+  playPauseBtn.classList.remove("paused");
+  playPauseBtn.innerHTML = `<i class="fa-solid fa-play"></i>`;
+  musicImage.classList.remove("rotate");
+  mAudio.pause();
 };
 
 // logic phát nhạc
@@ -154,6 +163,39 @@ mAudio.addEventListener("timeupdate", (e) => {
 });
 
 playPauseBtn.addEventListener("click", () => {
+  if (playPauseBtn.classList.contains("paused")) {
+    pauseMusic();
+  } else {
+    playMusic();
+  }
+});
+
+nextBtn.addEventListener("click", () => {
+  musicIndex++;
+  if (musicIndex > musicAll.length - 1) {
+    musicIndex = 0;
+  }
+  const currentMusic = musicAll[musicIndex];
+  loadMusic(currentMusic);
+  playMusic();
+});
+
+prevBtn.addEventListener("click", () => {
+  musicIndex--;
+  if (musicIndex < 0) {
+    musicIndex = musicAll.length - 1;
+  }
+  const currentMusic = musicAll[musicIndex];
+  loadMusic(currentMusic);
+  playMusic();
+});
+
+progressArea.addEventListener("click", (e) => {
+  let progressWidth = progressArea.clientWidth;
+  let clickedOffSetX = e.offsetX;
+  let songDuration = mAudio.duration;
+
+  mAudio.currentTime = (clickedOffSetX / progressWidth) * songDuration;
   playMusic();
 });
 
